@@ -68,7 +68,7 @@ class App extends Component {
                 this.config = response.data;
                 console.log(response);
                 this.addScriptToIndexFile();
-                // this.checkAuthorization();
+                this.checkAuthorization();
                 this.tryLoadTokenAssistant();
             });
     }
@@ -134,8 +134,11 @@ class App extends Component {
             return false;
         }
         this.tokenAssistant.loginIfRequired().then(() => {
-            this.setState({isLoggedIn: true});
+            if (!this.state.isLoggedIn) {
+                window.location.href = window.origin + "?user=true";
+            }
             this.userToken = this.tokenAssistant.getAuthHeader();
+            this.setState({isLoggedIn: true});
             console.log("Token " + this.userToken);
 
         }).fail((err) => {
@@ -156,6 +159,43 @@ class App extends Component {
             // Do something with request error
             return Promise.reject(error);
         });
+    }
+
+
+    checkAuthorization() {
+        if (this.getParameterByName("user")) {
+            if (this.getParameterByName("user") === "true") {
+                this.setState({isLoggedIn: true});
+            }
+            return true;
+        } else if (this.getParameterByName("error") === "login_required") {
+            window.location.href = window.origin + "?user=false";
+        } else if (this.getParameterByName("id_token")) {
+            window.location.href = window.origin + "?user=true";
+        } else {
+            let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
+            let nonce = "";
+            for (let item in nonceArray) {
+                nonce += nonceArray[item].toString();
+            }
+            const url = this.config.authorization_endpoint + `?response_type=id_token&client_id=${CLIENT_ID}` +
+                `&redirect_uri=${window.origin}&prompt=none&nonce=${nonce}`;
+            window.location.href = url;
+        }
+    }
+
+    getParameterByName(name) {
+        const url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        const regex = new RegExp("[?#&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) {
+            return null;
+        }
+        if (!results[2]) {
+            return '';
+        }
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 }
 
