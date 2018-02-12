@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {API_URL, CLIENT_ID, ISSUER} from "./constants";
+import {API_URL, AUTH_SERVER_ORIGIN, CLIENT_ID, ISSUER} from "./constants";
 import axios from "axios";
 
 class App extends Component {
@@ -15,8 +15,8 @@ class App extends Component {
         this.getToken = this.getToken.bind(this);
         this.callApi = this.callApi.bind(this);
         this.state = {isLoggedIn: false};
-
         this.loadConfiguration();
+        this.addAuthIntercepter();
     }
 
     render() {
@@ -114,7 +114,6 @@ class App extends Component {
         this.tryLoadTokenAssistant();
         this.tokenAssistant.loginIfRequired().then(() => {
             this.userToken = this.tokenAssistant.getAuthHeader();
-            axios.defaults.headers.common['Authorization'] = this.userToken;
             axios.get(API_URL + "/api")
                 .then(response => {
                     this.apiResponse = response.data.data;
@@ -130,14 +129,32 @@ class App extends Component {
 
     getToken() {
         this.tryLoadTokenAssistant();
+        if (!this.tokenAssistant) {
+            alert("Token Assistant is undefined.");
+            return false;
+        }
         this.tokenAssistant.loginIfRequired().then(() => {
             this.setState({isLoggedIn: true});
-            console.log("Tokens retrieved");
             this.userToken = this.tokenAssistant.getAuthHeader();
             console.log("Token " + this.userToken);
 
         }).fail((err) => {
             console.log("Failed to retrieve tokens", err);
+        });
+    }
+
+    addAuthIntercepter() {
+        // Add a request interceptor
+        axios.interceptors.request.use((config) => {
+            if (AUTH_SERVER_ORIGIN === new URL(config.url).origin) {
+                config.headers.authorization = this.userToken;
+            } else {
+                config.headers.authorization = null;
+            }
+            return config;
+        }, function (error) {
+            // Do something with request error
+            return Promise.reject(error);
         });
     }
 }
