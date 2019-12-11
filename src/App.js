@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {API_URL, AUTH_SERVER_ORIGIN, CLIENT_ID, ISSUER} from "./constants";
+import {API_URL, AUTH_SERVER_ORIGIN, CLIENT_ID, ISSUER, OPEN_ID_CONFIGURATION_URL} from "./constants";
 import axios from "axios";
 
 class App extends Component {
@@ -57,7 +57,7 @@ class App extends Component {
 
 
     loadConfiguration() {
-        axios.get(ISSUER + "/.well-known/openid-configuration")
+        axios.get(ISSUER + OPEN_ID_CONFIGURATION_URL)
             .then(response => {
                 this.config = response.data;
                 console.log(response);
