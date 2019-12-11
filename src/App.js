@@ -26,7 +26,8 @@ class App extends Component {
 
         if (!this.state.isLoggedIn) {
             button = <button onClick={this.getToken}>Login</button>
-        } else {
+        }
+        else {
             button = <button onClick={this.getToken}>Get Token</button>
             callApiBtn = <button onClick={this.callApi}>Call Api</button>
             if (this.userToken) {
@@ -73,7 +74,8 @@ class App extends Component {
             if (!this.tokenAssistant) {
                 this.loadTokenAssistant();
             }
-        } else {
+        }
+        else {
             setTimeout(() => {
                 this.count++;
                 if (this.count > 100) {
@@ -145,7 +147,8 @@ class App extends Component {
         axios.interceptors.request.use((config) => {
             if (AUTH_SERVER_ORIGIN === new URL(config.url).origin) {
                 config.headers.authorization = this.userToken;
-            } else {
+            }
+            else {
                 config.headers.authorization = null;
             }
             return config;
@@ -162,11 +165,14 @@ class App extends Component {
                 this.setState({isLoggedIn: true});
             }
             return true;
-        } else if (this.getParameterByName("error") === "login_required") {
+        }
+        else if (this.getParameterByName("error") === "login_required") {
             window.location.href = window.origin + "?user=false";
-        } else if (this.getParameterByName("id_token")) {
+        }
+        else if (this.getParameterByName("id_token")) {
             window.location.href = window.origin + "?user=true";
-        } else {
+        }
+        else {
             let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
             let nonce = "";
             for (let item in nonceArray) {
