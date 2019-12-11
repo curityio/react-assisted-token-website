@@ -15,5 +15,17 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "start": "concurrently --kill-others \"react-scripts start\" \"node server/server.js\""
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
