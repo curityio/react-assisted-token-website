@@ -6,7 +6,7 @@ import {
     CLIENT_ID,
     CONSTANTS,
     ISSUER,
-    OPEN_ID_CONFIGURATION_URL,
+    OPENID_CONFIGURATION_URL,
 } from './constants';
 import axios from "axios";
 
@@ -66,7 +66,7 @@ class App extends Component {
 
 
     loadConfiguration() {
-        axios.get(ISSUER + OPEN_ID_CONFIGURATION_URL).then(response => {
+        axios.get(ISSUER + OPENID_CONFIGURATION_URL).then(response => {
             this.config = response.data;
             console.log(response);
             this.addScriptToIndexFile();
