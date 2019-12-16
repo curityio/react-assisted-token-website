@@ -140,7 +140,8 @@ class App extends Component {
         }
         this.tokenAssistant.loginIfRequired().then((msg) => {
             if (!this.state.isLoggedIn) {
-                window.location.href = window.origin + "?user=true";
+                const userIsLoggedIn = window.origin + '?user=true';
+                window.history.pushState({path: userIsLoggedIn}, '', userIsLoggedIn);
             }
             this.userToken = this.tokenAssistant.getAuthHeader();
             this.setState({isLoggedIn: true});
@@ -179,10 +180,12 @@ class App extends Component {
             }
         }
         else if (parameterByError === CONSTANTS.LOGIN_REQUIRED) {
-            window.location.href = window.origin + "?user=false";
+            const userLoginRequired = window.origin + '?user=false';
+            window.history.pushState({path: userLoginRequired}, '', userLoginRequired);
         }
         else if (parameterByIdToken) {
-            window.location.href = window.origin + "?user=true";
+            const userIsLoggedIn = window.origin + '?user=true';
+            window.history.pushState({path: userIsLoggedIn}, '', userIsLoggedIn);
         }
         else {
             let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
