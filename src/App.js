@@ -114,7 +114,6 @@ class App extends Component {
     }
 
     callApi() {
-        this.tryLoadTokenAssistant();
         const isUserAuthenticated = this.tokenAssistant.isAuthenticated() &&
             !this.tokenAssistant.isExpired();
         if (isUserAuthenticated) {
@@ -135,7 +134,6 @@ class App extends Component {
     }
 
     getToken() {
-        this.tryLoadTokenAssistant();
         if (!this.tokenAssistant) {
             alert("Token Assistant is undefined.");
             return false;
