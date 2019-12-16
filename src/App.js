@@ -107,19 +107,23 @@ class App extends Component {
 
     callApi() {
         this.tryLoadTokenAssistant();
-        this.tokenAssistant.loginIfRequired().then(() => {
+        const isUserAuthenticated = this.tokenAssistant.isAuthenticated() &&
+            !this.tokenAssistant.isExpired();
+        if (isUserAuthenticated) {
             this.userToken = this.tokenAssistant.getAuthHeader();
-            axios.get(API_URL + "/api")
-                .then(response => {
-                    this.apiResponse = response.data.data;
-                    this.setState({isLoggedIn: true});
-                })
-                .catch(errorResponse => {
-                    this.apiResponse = errorResponse.error;
-                });
-        }).fail((err) => {
-            console.log("Failed to retrieve tokens", err);
-        });
+            axios.get(API_URL + '/api').then(response => {
+                this.apiResponse = response.data.data;
+                this.setState({isLoggedIn: true});
+            }).catch(errorResponse => {
+                this.apiResponse = errorResponse.error;
+            });
+        } else {
+            this.tokenAssistant.loginIfRequired().then((token) => {
+                this.callApi();
+            }).fail((err) => {
+                console.log('Failed to retrieve tokens', err);
+            });
+        }
     }
 
     getToken() {
