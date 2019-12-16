@@ -52,25 +52,25 @@ Your app is ready to be deployed!
 
 ## Curity Config
 In order to run this example you need to make some configurations in Curity server.    
-The easiest way is to [download and install the sample configuration](https://developer.curity.io/release/2.3.1/configuration-samples) from curity docs.   
+The easiest way is to [download and install the sample configuration](https://developer.curity.io/release/4.5.0/configuration-samples) from curity docs.   
 This sample configuration has already configured one `Authentication Profile` and one `OAuth Profile`. The `OAuth Profile` also has an app configured (`client-assisted-example`).   
 If you are not using the sample configuration, then you need to make sure that atleast these configuration requirements are met before you make the following changes.    
 
-1. Login into the Admin UI and update license under `System -> General`.
-    ![image](./docs/images/license.png)
-     
-2. Go to OAuth profile and make sure that `Code Flow`, `Implicit Flow` and `Assisted Token` `Client Capabilities` are enabled under `Token Service -> General`.
-    ![image](./docs/images/client-capabilities.png)
-    
-3. Go to the `Token Service -> Apps` and edit `client-assisted-example`.
-    ![image](./docs/images/oauth-apps.png)   
 
-4. On `Token Service -> Apps -> Edit App(client-assisted-example)` page, make sure that  `Implicit Flow` and `Assisted Token` are enabled under `Client Capabilities` section.
-    ![image](./docs/images/oauth-app1.png)  
-    
+1. Login into the Admin UI and make sure that you have uploaded a valid license under `System -> General`.
+   ![image](./docs/images/license.png)
+   
+2. Go to OAuth profile and make sure that at least `Implicit Flow` and `Assisted Token` are enabled on the `Client Settings` page of that profile.
+   ![image](./docs/images/profile-capabilities.png)
 
-5. Update the `Redirect URIs` and `Allowed Origins` for `client-assisted-example` OAuth App.
-    ![image](./docs/images/oauth-app2.png)   
+3. Go to the `Clients` page of the profile and create a client called `client-assisted-example`.
+   ![image](./docs/images/clients.png)
+
+4. This client (accessible from `Token Service -> Clients -> client-assisted-example -> Edit Client`) should have the `Implicit Flow` and `Assisted Token` options toggled on under the `Client Capabilities` section.
+   ![image](./docs/images/client-capabilities.png)
+
+5. Update the `Redirect URIs` and `Allowed Origins` settings for the `client-assisted-example` OAuth App. The redirect URI should be `http://localhost:4200`. This is the URL where the Angular CLI will be hosting the SPA. The allowed origin should be the same or, for testing purposes, you can also use `*`.
+   ![image](./docs/images/client-application-settings.png)
        
 6. Commit the changes and you are all setup.
 
@@ -98,14 +98,15 @@ If you compare the final config with the sample config, then you will find the f
 To integrate this example into any of React app, you need to copy `App Component` (`App.js`) and `constants.js` files into your project.    
 
 
-The last thing is to configure environment variables like `ISSUER`, `CLIENT_ID`, `API_URL` and `AUTH_SERVER_ORIGIN` in `constants.js` file.
+The last thing is to configure environment variables like `ISSUER`, `CLIENT_ID`, `API_URL`,`AUTH_SERVER_ORIGIN` and `OPENID_CONFIGURATION_URL` in `constants.js` file.
 You can see the following example environment config.
 
 ```javascript
-export const ISSUER = "https://localhost:8443/~";
+export const ISSUER = "https://localhost:8443/";
 export const CLIENT_ID = "client-assisted-example";
 export const API_URL = "http://127.0.0.1:8100";
 export const AUTH_SERVER_ORIGIN = "http://127.0.0.1:8100";
+export const OPENID_CONFIGURATION_URL = 'dev/oauth/anonymous/.well-known/openid-configuration';
 ```
 
 ## Supported Browsers
