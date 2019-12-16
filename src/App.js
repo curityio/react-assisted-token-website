@@ -58,15 +58,14 @@ class App extends Component {
 
 
     loadConfiguration() {
-        axios.get(ISSUER + OPEN_ID_CONFIGURATION_URL)
-            .then(response => {
-                this.config = response.data;
-                console.log(response);
-                this.addScriptToIndexFile();
-                this.checkAuthorization();
-                this.tryLoadTokenAssistant();
-            });
-    }
+        axios.get(ISSUER + OPEN_ID_CONFIGURATION_URL).then(response => {
+            this.config = response.data;
+            console.log(response);
+            this.addScriptToIndexFile();
+            this.checkAuthorization();
+            this.tryLoadTokenAssistant();
+        });
+    };
 
 
     tryLoadTokenAssistant() {
@@ -129,7 +128,7 @@ class App extends Component {
             alert("Token Assistant is undefined.");
             return false;
         }
-        this.tokenAssistant.loginIfRequired().then(() => {
+        this.tokenAssistant.loginIfRequired().then((msg) => {
             if (!this.state.isLoggedIn) {
                 window.location.href = window.origin + "?user=true";
             }
@@ -160,16 +159,19 @@ class App extends Component {
 
 
     checkAuthorization() {
-        if (this.getParameterByName("user")) {
-            if (this.getParameterByName("user") === "true") {
+        const parameterByUser = this.getParameterByName("user");
+        const parameterByError = this.getParameterByName("error");
+        const parameterByIdToken = this.getParameterByName("id_token");
+
+        if (parameterByUser) {
+            if (parameterByUser === "true") {
                 this.setState({isLoggedIn: true});
             }
-            return true;
         }
-        else if (this.getParameterByName("error") === "login_required") {
+        else if (parameterByError === "login_required") {
             window.location.href = window.origin + "?user=false";
         }
-        else if (this.getParameterByName("id_token")) {
+        else if (parameterByIdToken) {
             window.location.href = window.origin + "?user=true";
         }
         else {
