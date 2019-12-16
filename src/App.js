@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {API_URL, AUTH_SERVER_ORIGIN, CLIENT_ID, ISSUER, OPEN_ID_CONFIGURATION_URL} from "./constants";
+import {
+    API_URL,
+    AUTH_SERVER_ORIGIN,
+    AUTHORIZATION_PARAMETERS_BY,
+    CLIENT_ID,
+    CONSTANTS,
+    ISSUER,
+    OPEN_ID_CONFIGURATION_URL,
+} from './constants';
 import axios from "axios";
 
 class App extends Component {
@@ -163,16 +171,16 @@ class App extends Component {
 
 
     checkAuthorization() {
-        const parameterByUser = this.getParameterByName("user");
-        const parameterByError = this.getParameterByName("error");
-        const parameterByIdToken = this.getParameterByName("id_token");
+        const parameterByUser = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.USER);
+        const parameterByError = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.ERROR);
+        const parameterByIdToken = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.ID_TOKEN);
 
         if (parameterByUser) {
             if (parameterByUser === "true") {
                 this.setState({isLoggedIn: true});
             }
         }
-        else if (parameterByError === "login_required") {
+        else if (parameterByError === CONSTANTS.LOGIN_REQUIRED) {
             window.location.href = window.origin + "?user=false";
         }
         else if (parameterByIdToken) {
