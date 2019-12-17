@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {
     API_URL,
     AUTH_SERVER_ORIGIN,
-    AUTHORIZATION_PARAMETERS_BY,
     CLIENT_ID,
-    CONSTANTS,
+    ErrorCode,
     ISSUER,
     OPENID_CONFIGURATION_URL,
-} from './constants';
-import axios from "axios";
+    ParameterName,
+} from './errorCode';
+import axios from 'axios';
 
 class App extends Component {
     config = {};
@@ -140,8 +140,8 @@ class App extends Component {
         }
         this.tokenAssistant.loginIfRequired().then((msg) => {
             if (!this.state.isLoggedIn) {
-                const userIsLoggedIn = window.origin + '?user=true';
-                window.history.pushState({path: userIsLoggedIn}, '', userIsLoggedIn);
+                const href = window.origin + '?user=true';
+                window.history.pushState({path: href}, '', href);
             }
             this.userToken = this.tokenAssistant.getAuthHeader();
             this.setState({isLoggedIn: true});
@@ -168,32 +168,34 @@ class App extends Component {
 
 
     checkAuthorization() {
-        const parameterByUser = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.USER);
-        const parameterByError = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.ERROR);
-        const parameterByIdToken = this.getParameterByName(AUTHORIZATION_PARAMETERS_BY.ID_TOKEN);
+        const userParam = this.getParameterByName(ParameterName.USER);
+        const errorParam = this.getParameterByName(ParameterName.ERROR);
+        const idTokenParam = this.getParameterByName(ParameterName.ID_TOKEN);
 
-        if (parameterByUser) {
-            if (parameterByUser === "true") {
+        if (userParam) {
+            if (userParam === "true") {
                 this.setState({isLoggedIn: true});
             }
         }
-        else if (parameterByError === CONSTANTS.LOGIN_REQUIRED || parameterByError === CONSTANTS.INVALID_REQUEST ) {
-            const userLoginRequired = window.origin + '?user=false';
-            window.history.pushState({path: userLoginRequired}, '', userLoginRequired);
+        else if (errorParam === ErrorCode.LOGIN_REQUIRED || errorParam === ErrorCode.INVALID_REQUEST ) {
+            const href = window.origin + '?user=false';
+            window.history.pushState({path: href}, '', href);
         }
-        else if (parameterByIdToken) {
-            const userIsLoggedIn = window.origin + '?user=true';
-            window.history.pushState({path: userIsLoggedIn}, '', userIsLoggedIn);
+        else if (idTokenParam) {
+            const href = window.origin + '?user=true';
+            window.history.pushState({path: href}, '', href);
         }
         else {
             let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
             let nonce = "";
             for (let item in nonceArray) {
-                nonce += nonceArray[item].toString();
+                if (nonceArray.hasOwnProperty(item)) {
+                    nonce += nonceArray[item].toString();
+                }
             }
-            const url = this.config.authorization_endpoint + `?response_type=id_token&client_id=${CLIENT_ID}` +
+            window.location.href = this.config.authorization_endpoint +
+                `?response_type=id_token&client_id=${CLIENT_ID}` +
                 `&redirect_uri=${window.origin}&prompt=none&nonce=${nonce}`;
-            window.location.href = url;
         }
     }
 
