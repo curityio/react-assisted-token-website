@@ -145,8 +145,6 @@ class App extends Component {
             }
             this.userToken = this.tokenAssistant.getAuthHeader();
             this.setState({isLoggedIn: true});
-            console.log("Token " + this.userToken);
-
         }).fail((err) => {
             console.log("Failed to retrieve tokens", err);
         });
