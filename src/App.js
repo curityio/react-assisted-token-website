@@ -7,7 +7,7 @@ import {
     ISSUER,
     OPENID_CONFIGURATION_URL,
     ParameterName,
-} from './errorCode';
+} from './constants';
 import axios from 'axios';
 
 class App extends Component {
