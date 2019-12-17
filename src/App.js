@@ -177,7 +177,7 @@ class App extends Component {
                 this.setState({isLoggedIn: true});
             }
         }
-        else if (parameterByError === CONSTANTS.LOGIN_REQUIRED) {
+        else if (parameterByError === CONSTANTS.LOGIN_REQUIRED || parameterByError === CONSTANTS.INVALID_REQUEST ) {
             const userLoginRequired = window.origin + '?user=false';
             window.history.pushState({path: userLoginRequired}, '', userLoginRequired);
         }

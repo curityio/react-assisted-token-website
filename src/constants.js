@@ -12,4 +12,5 @@ export const AUTHORIZATION_PARAMETERS_BY = {
 
 export const CONSTANTS = {
   LOGIN_REQUIRED: 'login_required',
+  INVALID_REQUEST: 'invalid_request'
 };
