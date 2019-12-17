@@ -33,16 +33,16 @@ class App extends Component {
         let apiResponseData = null;
 
         if (!this.state.isLoggedIn) {
-            button = <button onClick={this.getToken}>Login</button>
+            button = <button onClick={this.getToken}>Login</button>;
         }
         else {
-            button = <button onClick={this.getToken}>Get Token</button>
-            callApiBtn = <button onClick={this.callApi}>Call Api</button>
+            button = <button onClick={this.getToken}>Get Token</button>;
+            callApiBtn = <button onClick={this.callApi}>Call Api</button>;
             if (this.userToken) {
-                tokenData = <label>Token: {this.userToken}</label>
+                tokenData = <label>Token: {this.userToken}</label>;
             }
             if (this.apiResponse) {
-                apiResponseData = <label>{this.apiResponse}</label>
+                apiResponseData = <label>{this.apiResponse}</label>;
             }
 
         }
@@ -64,7 +64,6 @@ class App extends Component {
         );
     }
 
-
     loadConfiguration() {
         axios.get(ISSUER + OPENID_CONFIGURATION_URL).then(response => {
             this.config = response.data;
@@ -74,7 +73,6 @@ class App extends Component {
             this.tryLoadTokenAssistant();
         });
     };
-
 
     tryLoadTokenAssistant() {
         if (window.curity) {
@@ -95,21 +93,22 @@ class App extends Component {
 
     addScriptToIndexFile() {
         var head = window.document.head;
-        var script = window.document.createElement("script");
+        var script = window.document.createElement('script');
         script.type = 'text/javascript';
-        script.src = this.config.assisted_token_endpoint + "/resources/js/assisted-token.min.js";
-        script.id = "assisted-token-js-script";
+        script.src = this.config.assisted_token_endpoint +
+            '/resources/js/assisted-token.min.js';
+        script.id = 'assisted-token-js-script';
         head.appendChild(script);
     }
 
     loadTokenAssistant() {
         if (!window.curity) {
-            throw new Error("Assisted token javascript was not found." +
-                " Make sure the server is running and/or update URL " +
-                "of #assisted-token-js-script script");
+            throw new Error('Assisted token javascript was not found.' +
+                ' Make sure the server is running and/or update URL ' +
+                'of #assisted-token-js-script script');
         }
         this.tokenAssistant = window.curity.token.assistant({
-            clientId: CLIENT_ID
+            clientId: CLIENT_ID,
         });
     }
 
@@ -124,7 +123,8 @@ class App extends Component {
             }).catch(errorResponse => {
                 this.apiResponse = errorResponse.error;
             });
-        } else {
+        }
+        else {
             this.tokenAssistant.loginIfRequired().then((token) => {
                 this.callApi();
             }).fail((err) => {
@@ -135,7 +135,7 @@ class App extends Component {
 
     getToken() {
         if (!this.tokenAssistant) {
-            alert("Token Assistant is undefined.");
+            alert('Token Assistant is undefined.');
             return false;
         }
         this.tokenAssistant.loginIfRequired().then((msg) => {
@@ -146,7 +146,7 @@ class App extends Component {
             this.userToken = this.tokenAssistant.getAuthHeader();
             this.setState({isLoggedIn: true});
         }).fail((err) => {
-            console.log("Failed to retrieve tokens", err);
+            console.log('Failed to retrieve tokens', err);
         });
     }
 
@@ -160,12 +160,11 @@ class App extends Component {
                 config.headers.authorization = null;
             }
             return config;
-        }, function (error) {
+        }, function(error) {
             // Do something with request error
             return Promise.reject(error);
         });
     }
-
 
     checkAuthorization() {
         const userParam = this.getParameterByName(ParameterName.USER);
@@ -173,11 +172,12 @@ class App extends Component {
         const idTokenParam = this.getParameterByName(ParameterName.ID_TOKEN);
 
         if (userParam) {
-            if (userParam === "true") {
+            if (userParam === 'true') {
                 this.setState({isLoggedIn: true});
             }
         }
-        else if (errorParam === ErrorCode.LOGIN_REQUIRED || errorParam === ErrorCode.INVALID_REQUEST ) {
+        else if (errorParam === ErrorCode.LOGIN_REQUIRED || errorParam ===
+            ErrorCode.INVALID_REQUEST) {
             const href = window.origin + '?user=false';
             window.history.pushState({path: href}, '', href);
         }
@@ -187,7 +187,7 @@ class App extends Component {
         }
         else {
             let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
-            let nonce = "";
+            let nonce = '';
             for (let item in nonceArray) {
                 if (nonceArray.hasOwnProperty(item)) {
                     nonce += nonceArray[item].toString();
@@ -201,8 +201,8 @@ class App extends Component {
 
     getParameterByName(name) {
         const url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
-        const regex = new RegExp("[?#&]" + name + "(=([^&#]*)|&|#|$)"),
+        name = name.replace(/[\[\]]/g, '\\$&');
+        const regex = new RegExp('[?#&]' + name + '(=([^&#]*)|&|#|$)'),
             results = regex.exec(url);
         if (!results) {
             return null;
@@ -210,7 +210,7 @@ class App extends Component {
         if (!results[2]) {
             return '';
         }
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 }
 
