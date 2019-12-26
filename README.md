@@ -1,7 +1,5 @@
 # React Assisted Token Example
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-
 Below you will find some information on how to perform common tasks.<br>
 
 For the project to build, **these files must exist with exact filenames**:
