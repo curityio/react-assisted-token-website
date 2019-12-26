@@ -1,6 +1,14 @@
 import React, {Component} from 'react';
-import {API_URL, AUTH_SERVER_ORIGIN, CLIENT_ID, ISSUER} from "./constants";
-import axios from "axios";
+import {
+    API_URL,
+    AUTH_SERVER_ORIGIN,
+    CLIENT_ID,
+    ErrorCode,
+    ISSUER,
+    OPENID_CONFIGURATION_URL,
+    ParameterName,
+} from './constants';
+import axios from 'axios';
 
 class App extends Component {
     config = {};
@@ -25,15 +33,16 @@ class App extends Component {
         let apiResponseData = null;
 
         if (!this.state.isLoggedIn) {
-            button = <button onClick={this.getToken}>Login</button>
-        } else {
-            button = <button onClick={this.getToken}>Get Token</button>
-            callApiBtn = <button onClick={this.callApi}>Call Api</button>
+            button = <button onClick={this.getToken}>Login</button>;
+        }
+        else {
+            button = <button onClick={this.getToken}>Get Token</button>;
+            callApiBtn = <button onClick={this.callApi}>Call Api</button>;
             if (this.userToken) {
-                tokenData = <label>Token: {this.userToken}</label>
+                tokenData = <label>Token: {this.userToken}</label>;
             }
             if (this.apiResponse) {
-                apiResponseData = <label>{this.apiResponse}</label>
+                apiResponseData = <label>{this.apiResponse}</label>;
             }
 
         }
@@ -55,25 +64,23 @@ class App extends Component {
         );
     }
 
-
     loadConfiguration() {
-        axios.get(ISSUER + "/.well-known/openid-configuration")
-            .then(response => {
-                this.config = response.data;
-                console.log(response);
-                this.addScriptToIndexFile();
-                this.checkAuthorization();
-                this.tryLoadTokenAssistant();
-            });
-    }
-
+        axios.get(ISSUER + OPENID_CONFIGURATION_URL).then(response => {
+            this.config = response.data;
+            console.log(response);
+            this.addScriptToIndexFile();
+            this.checkAuthorization();
+            this.tryLoadTokenAssistant();
+        });
+    };
 
     tryLoadTokenAssistant() {
         if (window.curity) {
             if (!this.tokenAssistant) {
                 this.loadTokenAssistant();
             }
-        } else {
+        }
+        else {
             setTimeout(() => {
                 this.count++;
                 if (this.count > 100) {
@@ -86,57 +93,60 @@ class App extends Component {
 
     addScriptToIndexFile() {
         var head = window.document.head;
-        var script = window.document.createElement("script");
+        var script = window.document.createElement('script');
         script.type = 'text/javascript';
-        script.src = this.config.assisted_token_endpoint + "/resources/js/assisted-token.min.js";
-        script.id = "assisted-token-js-script";
+        script.src = this.config.assisted_token_endpoint +
+            '/resources/js/assisted-token.min.js';
+        script.id = 'assisted-token-js-script';
         head.appendChild(script);
     }
 
     loadTokenAssistant() {
         if (!window.curity) {
-            throw new Error("Assisted token javascript was not found." +
-                " Make sure the server is running and/or update URL " +
-                "of #assisted-token-js-script script");
+            throw new Error('Assisted token javascript was not found.' +
+                ' Make sure the server is running and/or update URL ' +
+                'of #assisted-token-js-script script');
         }
         this.tokenAssistant = window.curity.token.assistant({
-            clientId: CLIENT_ID
+            clientId: CLIENT_ID,
         });
     }
 
     callApi() {
-        this.tryLoadTokenAssistant();
-        this.tokenAssistant.loginIfRequired().then(() => {
+        const isUserAuthenticated = this.tokenAssistant.isAuthenticated() &&
+            !this.tokenAssistant.isExpired();
+        if (isUserAuthenticated) {
             this.userToken = this.tokenAssistant.getAuthHeader();
-            axios.get(API_URL + "/api")
-                .then(response => {
-                    this.apiResponse = response.data.data;
-                    this.setState({isLoggedIn: true});
-                })
-                .catch(errorResponse => {
-                    this.apiResponse = errorResponse.error;
-                });
-        }).fail((err) => {
-            console.log("Failed to retrieve tokens", err);
-        });
+            axios.get(API_URL + '/api').then(response => {
+                this.apiResponse = response.data.data;
+                this.setState({isLoggedIn: true});
+            }).catch(errorResponse => {
+                this.apiResponse = errorResponse.error;
+            });
+        }
+        else {
+            this.tokenAssistant.loginIfRequired().then((token) => {
+                this.callApi();
+            }).fail((err) => {
+                console.log('Failed to retrieve tokens', err);
+            });
+        }
     }
 
     getToken() {
-        this.tryLoadTokenAssistant();
         if (!this.tokenAssistant) {
-            alert("Token Assistant is undefined.");
+            alert('Token Assistant is undefined.');
             return false;
         }
-        this.tokenAssistant.loginIfRequired().then(() => {
+        this.tokenAssistant.loginIfRequired().then((msg) => {
             if (!this.state.isLoggedIn) {
-                window.location.href = window.origin + "?user=true";
+                const href = window.origin + '?user=true';
+                window.history.pushState({path: href}, '', href);
             }
             this.userToken = this.tokenAssistant.getAuthHeader();
             this.setState({isLoggedIn: true});
-            console.log("Token " + this.userToken);
-
         }).fail((err) => {
-            console.log("Failed to retrieve tokens", err);
+            console.log('Failed to retrieve tokens', err);
         });
     }
 
@@ -145,43 +155,54 @@ class App extends Component {
         axios.interceptors.request.use((config) => {
             if (AUTH_SERVER_ORIGIN === new URL(config.url).origin) {
                 config.headers.authorization = this.userToken;
-            } else {
+            }
+            else {
                 config.headers.authorization = null;
             }
             return config;
-        }, function (error) {
+        }, function(error) {
             // Do something with request error
             return Promise.reject(error);
         });
     }
 
-
     checkAuthorization() {
-        if (this.getParameterByName("user")) {
-            if (this.getParameterByName("user") === "true") {
+        const userParam = this.getParameterByName(ParameterName.USER);
+        const errorParam = this.getParameterByName(ParameterName.ERROR);
+        const idTokenParam = this.getParameterByName(ParameterName.ID_TOKEN);
+
+        if (userParam) {
+            if (userParam === 'true') {
                 this.setState({isLoggedIn: true});
             }
-            return true;
-        } else if (this.getParameterByName("error") === "login_required") {
-            window.location.href = window.origin + "?user=false";
-        } else if (this.getParameterByName("id_token")) {
-            window.location.href = window.origin + "?user=true";
-        } else {
+        }
+        else if (errorParam === ErrorCode.LOGIN_REQUIRED || errorParam ===
+            ErrorCode.INVALID_REQUEST) {
+            const href = window.origin + '?user=false';
+            window.history.pushState({path: href}, '', href);
+        }
+        else if (idTokenParam) {
+            const href = window.origin + '?user=true';
+            window.history.pushState({path: href}, '', href);
+        }
+        else {
             let nonceArray = window.crypto.getRandomValues(new Uint8Array(8));
-            let nonce = "";
+            let nonce = '';
             for (let item in nonceArray) {
-                nonce += nonceArray[item].toString();
+                if (nonceArray.hasOwnProperty(item)) {
+                    nonce += nonceArray[item].toString();
+                }
             }
-            const url = this.config.authorization_endpoint + `?response_type=id_token&client_id=${CLIENT_ID}` +
+            window.location.href = this.config.authorization_endpoint +
+                `?response_type=id_token&client_id=${CLIENT_ID}` +
                 `&redirect_uri=${window.origin}&prompt=none&nonce=${nonce}`;
-            window.location.href = url;
         }
     }
 
     getParameterByName(name) {
         const url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
-        const regex = new RegExp("[?#&]" + name + "(=([^&#]*)|&|#|$)"),
+        name = name.replace(/[\[\]]/g, '\\$&');
+        const regex = new RegExp('[?#&]' + name + '(=([^&#]*)|&|#|$)'),
             results = regex.exec(url);
         if (!results) {
             return null;
@@ -189,7 +210,7 @@ class App extends Component {
         if (!results[2]) {
             return '';
         }
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 }
 
