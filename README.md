@@ -1,5 +1,9 @@
 # React Assisted Token Example
 
+[![Quality](https://curity.io/assets/images/badges/react-js-app-using-assisted-token-flow-quality.svg)](https://curity.io/resources/code-examples/status/)
+[![Availability](https://curity.io/assets/images/badges/react-js-app-using-assisted-token-flow-availability.svg)](https://curity.io/resources/code-examples/status/)
+
+
 Below you will find some information on how to perform common tasks.<br>
 
 For the project to build, **these files must exist with exact filenames**:
