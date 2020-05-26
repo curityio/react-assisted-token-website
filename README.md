@@ -1,7 +1,7 @@
 # React Assisted Token Example
 
-[![Quality](https://curity.io/assets/images/badges/react-js-app-using-assisted-token-flow-quality.svg)](https://curity.io/resources/code-examples/status/)
-[![Availability](https://curity.io/assets/images/badges/react-js-app-using-assisted-token-flow-availability.svg)](https://curity.io/resources/code-examples/status/)
+[![Quality](https://curity.io/assets/images/badges/react-assisted-token-website-quality.svg)](https://curity.io/resources/code-examples/status/)
+[![Availability](https://curity.io/assets/images/badges/react-assisted-token-website-availability.svg)](https://curity.io/resources/code-examples/status/)
 
 
 Below you will find some information on how to perform common tasks.<br>
