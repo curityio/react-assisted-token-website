@@ -20,7 +20,7 @@ Only files inside `public` can be used from `public/index.html`.<br>
 Read instructions below for using assets from JavaScript and HTML.
 
 You can, however, create more top-level directories.<br>
-They will not be included in the production build so you can use them for things like documentation.
+They will not be included in the production build, so you can use them for things like documentation.
 
 ## Quick Start
 In this example, an API call is made using an access token received from a Curity server after authentication using the "assisted token flow".
@@ -54,32 +54,38 @@ The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 
-## Curity Config
+## Curity Configuration
 In order to run this example you need to make some configurations in Curity server.    
 The easiest way is to [download and install the sample configuration](https://developer.curity.io/release/4.5.0/configuration-samples) from curity docs.   
 This sample configuration has already configured one `Authentication Profile` and one `OAuth Profile`. The `OAuth Profile` also has an app configured (`client-assisted-example`).   
-If you are not using the sample configuration, then you need to make sure that atleast these configuration requirements are met before you make the following changes.    
+
+If you are not using the sample configuration, then you need to make sure the following configuration changes are made before you use this example. 
 
 
-1. Login into the Admin UI and make sure that you have uploaded a valid license under `System -> General`.
+1. Login into the `Admin UI` and make sure that you have uploaded a valid license under `System -> General`.
+
 
    ![image](./docs/images/license.png)
    
-2. Go to Token Service profile and make sure that at least `Implicit Flow` and `Assisted Token` are enabled on the `Client Settings` page of that profile.
+2. Go to `Token Service` profile and make sure that at least `Implicit Flow` and `Assisted Token` are enabled on the `Client Settings` page of that profile.
+
 
    ![image](./docs/images/profile-capabilities.png)
 
 3. Go to the `Clients` page of the profile and create a client called `client-assisted-example`.
 
+
    ![image](./docs/images/clients.png)
 
 4. This client (accessible from `Token Service -> Clients -> client-assisted-example -> Edit Client`) should have the `Implicit Flow` and `Assisted Token` capabilities selected under the `Capabilities` section.
+
 
    ![image](./docs/images/client-capabilities.png)
 
 
 5. Navigate to `OAuth/OpenID Settings` section make sure to add
    `opendid` scope.
+   
    
    ![image](./docs/images/openid-scope.png)
 
@@ -89,7 +95,7 @@ If you are not using the sample configuration, then you need to make sure that a
    ![image](./docs/images/client-application-settings.png)
 
        
-7. Commit the changes and you are all setup.
+7. `Validate` and `Commit` the changes and you are all setup.
 
 
 If you compare the final config with the sample config, then you will find the following salient differences.
