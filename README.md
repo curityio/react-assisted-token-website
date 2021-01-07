@@ -82,21 +82,16 @@ If you are not using the sample configuration, then you need to make sure the fo
 
    ![image](./docs/images/client-capabilities.png)
 
-
-5. Navigate to `OAuth/OpenID Settings` section make sure to add
-   `openid` scope.
+5. Navigate to `OAuth/OpenID Settings` section make sure to add `openid` scope.
    
-   
-   ![image](./docs/images/openid-scope.png)
-
+![image](./docs/images/openid-scope.png)
 
 6. Update the `Redirect URIs` and `Allowed Origins` settings for the `client-assisted-example` Client. The redirect URI should be `http://localhost:3000`. The allowed origin should be the same or, for testing purposes, you can also use `*`.
 
+
    ![image](./docs/images/client-application-settings.png)
-
        
-7. `Validate` and `Commit` the changes and you are all setup.
-
+7. `Commit` the changes and you are all setup.
 
 If you compare the final config with the sample config, then you will find the following salient differences.
 
