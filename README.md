@@ -84,7 +84,7 @@ If you are not using the sample configuration, then you need to make sure the fo
 
 
 5. Navigate to `OAuth/OpenID Settings` section make sure to add
-   `opendid` scope.
+   `openid` scope.
    
    
    ![image](./docs/images/openid-scope.png)
