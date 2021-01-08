@@ -194,7 +194,7 @@ class App extends Component {
                 }
             }
             window.location.href = this.config.authorization_endpoint +
-                `?response_type=id_token&client_id=${CLIENT_ID}` +
+                `?response_type=id_token&scope=openid&client_id=${CLIENT_ID}` +
                 `&redirect_uri=${window.origin}&prompt=none&nonce=${nonce}`;
         }
     }
