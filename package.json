@@ -1,13 +1,13 @@
 {
   "name": "react-assisted-token-website",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
-    "axios": "0.21.1",
-    "concurrently": "5.3.0",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-scripts": "4.0.1"
+    "axios": "0.24.0",
+    "concurrently": "6.4.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-scripts": "5.0.0"
   },
   "scripts": {
     "run-app": "react-scripts start",
